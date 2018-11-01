@@ -3,9 +3,9 @@ Math 590
 Project 1
 Fall 2018
 
-Partner 1:
-Partner 2:
-Date:
+Partner 1: Walker Harrison
+Partner 2: Lisa Lebovici
+Date: November 2, 2018
 """
 
 # Import time, random, plotting, stats, and numpy.
@@ -17,26 +17,186 @@ import numpy
 
 """
 SelectionSort
+
+This function takes in an unsorted list and returns a sorted list after
+implementing SelectionSort.
+
+To implement SelectionSort, the algorithm divides the list into a sorted
+and unsorted component, initially treating the whole list as unsorted. On
+each iteration, it finds the minimum element of the unsorted component and
+places it at the end of the sorted component. The starting index of the
+unsorted component then increments by 1 until the whole list is sorted.
+
+INPUTS
+A: a non-empty unsorted list
+
+OUTPUTS
+A: the sorted list
 """
 def SelectionSort(A):
+    # if the list is just a single element, it's sorted by default
+    # so just return as is
+    if len(A) > 1:
+
+        # store the index separating the sorted and unsorted components,
+        # starting at the front of the list
+        k = 0
+
+        # iterate through the unsorted component
+        while k != len(A) - 1:
+            # find the location of the minimum element in the unsorted
+            # component. Initially, just assume it's the first element
+            min_idx = k
+
+            for i in range(k, len(A)):
+                if A[i] < A[min_idx]:
+                    min_idx = i
+
+            # swap the element at location k (the end of the sorted
+            # component) with the minimum element
+            if k != min_idx:
+                temp = A[k]
+                A[k] = A[min_idx]
+                A[min_idx] = temp
+
+            # increment k and repeat until list is sorted
+            k += 1
+
     return A
 
 """
 InsertionSort
+
+This function takes in an unsorted list and returns a sorted list after
+implementing InsertionSort.
+
+To implement InsertionSort, the algorithm divides the list into a sorted
+and unsorted component, initially treating the whole list as unsorted. On
+each iteration, it takes the first unsorted element and inserts it into
+the sorted component by searching backwards for its position. The remaining
+sorted elements are then shifted 1 to the right.
+
+INPUTS
+A: a non-empty unsorted list
+
+OUTPUTS
+A: the sorted list
 """
 def InsertionSort(A):
+    # if the list is just a single element, it's sorted by default
+    # so just return as is
+    if len(A) > 1:
+        k = 0
+
+        # store the index separating the sorted and unsorted components,
+        # starting at the front of the list
+        while k != len(A) - 1:
+            # find the index at which (k+1)th element should be sorted
+            for i in reversed(range(0, k + 1)):
+                if A[k + 1] >= A[i]:
+                    insert_idx = i + 1
+                    break
+            else:
+                insert_idx = 0
+
+            # shift the remaining sorted elements one position to the
+            # right and insert the (k+1)th element at that position
+            if insert_idx != k + 1:
+                temp = A[k + 1]
+
+                for i in reversed(range(insert_idx, k + 1)):
+                    A[i + 1] = A[i]
+
+                A[insert_idx] = temp
+
+            # increment k and repeat until list is sorted
+            k += 1
+
     return A
 
 """
 BubbleSort
 """
 def BubbleSort(A):
+    if len(A) > 1:
+        swaps = 99
+        while swaps > 0:
+            k = 0
+            swaps = 0
+            while k < len(A)-1:
+                if A[k] > A[k+1]:
+                    temp = A[k+1]
+                    A[k+1] = A[k]
+                    A[k] = temp
+                    swaps +=1
+                k += 1
+
     return A
 
 """
 MergeSort
+
+This function takes in an unsorted list and returns a sorted list after
+implementing MergeSort.
+
+To implement MergeSort, recursively divide the list into two halves until
+the base cases of length 1 or length 2 are reached. To merge halves back
+together, iterate through simultaneously; each time, compare the smallest
+elements and insert the smaller of the two into the merged list.
+
+INPUTS
+A: a non-empty unsorted list
+
+OUTPUTS
+A: the sorted list
 """
 def MergeSort(A):
+    # if the list is just a single element, it's sorted by default
+    # so just return as is
+    if len(A) == 1:
+        return A
+
+    # if the list has two elements, swap if necessary and then return
+    elif len(A) == 2:
+        if A[0] > A[1]:
+            temp = A[0]
+            A[0] = A[1]
+            A[1] = temp
+
+        return A
+
+    # otherwise, split the list in two halves and recurse
+    else:
+        n = len(A) // 2
+        A1 = MergeSort(A[:n])
+        A2 = MergeSort(A[n:])
+
+        # merge the halves back together
+        # i = index of the smallest element of A1
+        # j = index of the smallest element of A2
+        i = j = 0
+
+        # iterate through A1 and A2, comparing their smallest elements.
+        # the smaller of the two gets inserted into the merged list.
+        # if we've iterated entirely through one of the lists, just insert
+        # the remaining elements from the other
+        for k in range(len(A)):
+            if i == len(A1):
+                A[k] = A2[j]
+                j += 1
+
+            elif j == len(A2):
+                A[k] = A1[i]
+                i += 1
+
+            elif A1[i] < A2[j]:
+                A[k] = A1[i]
+                i += 1
+
+            else:
+                A[k] = A2[j]
+                j += 1
+
     return A
 
 """
@@ -45,7 +205,49 @@ QuickSort
 Sort a list A with the call QuickSort(A, 0, len(A)).
 """
 def QuickSort(A, i, j):
-    return A
+    #print(i, j)
+    if j-i == 1:
+        return A
+
+    elif j-i == 2:
+        if A[i] > A[j-1]:
+            temp = A[i]
+            A[i] = A[j-1]
+            A[j-1] = temp
+
+        return A
+
+    else:
+        left = i
+        right = j-1
+        pivot = A[right]
+        while (right > left):
+            if A[left] > pivot:
+
+                if right == left + 1:
+                    temp = A[left]
+                    A[left] = A[right]
+                    A[right] = temp
+                    right -= 1
+
+                else:
+                    temp = A[right-1]
+                    A[right-1] = A[right]
+                    A[right] = A[left]
+                    A[left] = temp
+                    right -= 1
+            else:
+                left += 1
+
+
+        if right > 0:
+            QuickSort(A, i, right)
+        QuickSort(A, right, j)
+        #print(right, pivot)
+
+        return A
+
+    #return A
 
 """
 isSorted
@@ -199,7 +401,7 @@ numTrials: the number of trials to average timing data across
     (default = 30)
 
 OUTPUTS
-A number of genereated runtime vs n plot, a log-log plot for several
+A number of generated runtime vs n plot, a log-log plot for several
 algorithms, and printed statistics about the slope of the log-log plots.
 """
 def measureTime(sortedFlag = False, numTrials = 30):

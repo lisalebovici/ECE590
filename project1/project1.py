@@ -3,8 +3,8 @@ Math 590
 Project 1
 Fall 2018
 
-Partner 1: Walker Harrison
-Partner 2: Lisa Lebovici
+Partner 1: Walker Harrison (weh18)
+Partner 2: Lisa Lebovici (lrl22)
 Date: November 2, 2018
 """
 
@@ -240,7 +240,8 @@ of it, while elements smaller are placed to the left. Then recursively apply
 this logic to the two new lists created on either side of the pivot.
 
 INPUTS
-A: a non-empty unsorted list, i: the lower index of the range of elements to be sorted,
+A: a non-empty unsorted list
+i: the lower index of the range of elements to be sorted
 j: the higher index of the range of elements to be sorted
 
 OUTPUTS

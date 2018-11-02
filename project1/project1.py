@@ -64,6 +64,7 @@ def SelectionSort(A):
 
     return A
 
+
 """
 InsertionSort
 
@@ -114,6 +115,7 @@ def InsertionSort(A):
 
     return A
 
+
 """
 BubbleSort
 
@@ -140,29 +142,30 @@ def BubbleSort(A):
         swaps = 99
         # initial max element to check; only need to check n-k each time
         max_idx = len(A) - 1
-        
+
         # iterate until no swaps done
         while swaps > 0:
             # start at beginning of list
             k = 0
             swaps = 0
-            
+
             # check first n-k elements
             while k < max_idx:
-                
+
                 # swap elements if first is larger
                 if A[k] > A[k+1]:
                     temp = A[k+1]
                     A[k+1] = A[k]
                     A[k] = temp
-                    
+
                     # keep count of swaps
-                    swaps +=1
+                    swaps += 1
                 k += 1
-            
+
             # decrement max index
             max_idx -= 1
     return A
+
 
 """
 MergeSort
@@ -230,14 +233,16 @@ def MergeSort(A):
 
     return A
 
+
 """
 QuickSort
 
-This function takes in an unsorted list and two indices sorts the elements between 
-those two indices by implementing QuickSort. To implement QuickSort, pick an element
-to serve as a pivot value. Elements greater than this value are placed to the right 
-of it, while elements smaller are placed to the left. Then recursively apply
-this logic to the two new lists created on either side of the pivot.
+This function takes in an unsorted list and two indices, and sorts the
+elements between those two indices by implementing QuickSort. To implement
+QuickSort, pick an element to serve as a pivot value. Elements greater than
+this value are placed to the right  of it, while elements smaller are placed
+to the left. Then recursively apply this logic to the two new lists created
+on either side of the pivot.
 
 INPUTS
 A: a non-empty unsorted list
@@ -248,34 +253,33 @@ OUTPUTS
 A: the list sorted between indices i and j
 """
 def QuickSort(A, i, j):
-    
     # Base case: if the list is a single element, return
     if j-i == 1:
         return A
-    
+
     else:
         # set indices at limits of incoming list
         left = i
         right = j-1
         # set pivot as rightmost element
         pivot = A[right]
-        
+
         # iteratively check elements from the outside in
         while (right > left):
-            
+
             # if value on left is greater than pivot, put it on right
             if A[left] > pivot:
-                  
+
                 # if values are adjacent, just use traditional swap
                 if right == left + 1:
                     temp = A[left]
                     A[left] = A[right]
                     A[right] = temp
                     right -= 1
-                  
+
                 # otherwise we need to make room
                 # push element immediately below right to beginning
-                else: 
+                else:
                     temp = A[right-1]
                     A[right-1] = A[right]
                     A[right] = A[left]
@@ -283,13 +287,14 @@ def QuickSort(A, i, j):
                     right -= 1
             else:
                 left += 1
-                
+
         # recurse on two smaller lists created
-        if right > 0: 
+        if right > 0:
             QuickSort(A, i, right)
         QuickSort(A, right, j)
 
         return A
+
 
 """
 isSorted

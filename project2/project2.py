@@ -29,6 +29,11 @@ def bdfs(maze, alg):
         raise Exception('Incorrect alg! Need BFS or DFS!')
 
     if alg == 'DFS':
+        # reset vertices and previous visited
+        for v in maze.adjList:
+            v.visited = False
+            v.prev = None
+
         # initialize stack
         stack = Stack()
 

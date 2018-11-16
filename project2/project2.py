@@ -52,16 +52,57 @@ def bdfs(maze, alg):
                     stack.push(neighbor)
                     neighbor.prev = current
 
-    # reconstruct path from exit to start
-    path = []
-    v = maze.exit
-    path.append(v.rank)
-
-    while v.rank != maze.start.rank:
-        v = v.prev
+        # reconstruct path from exit to start
+        path = []
+        v = maze.exit
         path.append(v.rank)
 
-    path.reverse()
+        while v.rank != maze.start.rank:
+            v = v.prev
+            path.append(v.rank)
+
+        path.reverse()
+
+        return path
+        
+    if alg == 'BFS':
+        # reset all vertices to have infinite distance and no previously visited
+        for v in maze.adjList:
+            v.dist = math.inf
+            v.prev = None        
+        
+        # initialize the queue and push the first vertex on, start with 0 distance
+        queue = Queue()
+        queue.push(maze.start)
+        maze.start.dist = 0
+
+        # iterate while we still have vertices to check
+        while not queue.isEmpty():
+            
+            # examine each vertex and its neighbors
+            current = queue.pop()
+            for neighbor in current.neigh:
+                
+                # infinite distance indicates we haven't yet checked
+                if neighbor.dist == math.inf:
+                    
+                    # add vertex to the queue, increment our distance and update the path
+                    queue.push(neighbor)
+                    neighbor.dist = current.dist + 1
+                    neighbor.prev = current
+
+        # add exit to path
+        path = []
+        v = maze.exit
+        path.append(v.rank)
+
+        # "unravel" path back toward start
+        while v.rank != maze.start.rank:
+            v = v.prev
+            path.append(v.rank)
+
+        # reverse to get proper order
+        path.reverse()
         
     return path
 
@@ -171,10 +212,12 @@ class Queue:
     Note: intially the size of the queue defaults to 100.
     Note: the queue is initally filled with None values.
     """
-    def __init__(self, size=3):
+    def __init__(self, size=100):
         self.queue = [None for x in range(0,size)]
         self.front = 0
-        self.rear = 0
+        
+        # modified from 0 so that first element added makes front/rear same
+        self.rear = -1
         self.numElems = 0
         return
 
@@ -226,14 +269,41 @@ class Queue:
     push function to push a value into the rear of the queue.
     """
     def push(self, val):
-        ##### IMPLEMENT! #####
+        
+        # if we need more space, double the size
+        if self.isFull():
+            self.resize()
+        
+        # incremement new last element
+        # queue can wrap so we need modulo of length
+        self.rear = (self.rear + 1) % len(self.queue)
+        
+        # update number of elements and add value to rear
+        self.numElems += 1
+        self.queue[self.rear] = val
+       
         return
 
     """
     pop function to pop the value from the front of the queue.
     """
     def pop(self):
-        ##### IMPLEMENT! #####
+        
+        # if there is an element to pop
+        if not self.isEmpty():
+            
+            # it will be from the front (FIFO)
+            val = self.queue[self.front]
+            
+            # delete element, incremement new first element, and update number of elements
+            # queue can wrap so we need modulo of length
+            self.queue[self.front] = None
+            self.front = (self.front + 1) % len(self.queue)
+            self.numElems -= 1
+            
+            return val
+        
+        # if queue has no elements
         return None
 
 ################################################################################

@@ -255,11 +255,11 @@ class Queue:
     def resize(self):
         # If the queue is wrapped, reset order of elems.
         if not (self.rear > self.front):
-            self.queue = self.queue[self.front:] + self.queue[0:self.rear]
+            self.queue = self.queue[self.front:] + self.queue[0:(self.rear+1)]
 
         # Update front and rear.
         self.front = 0
-        self.rear = self.numElems
+        self.rear = self.numElems - 1
 
         # Now append the extra space (double size).
         self.queue = self.queue + [None for x in self.queue]

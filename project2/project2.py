@@ -52,7 +52,7 @@ def bdfs(maze, alg):
                     stack.push(neighbor)
                     neighbor.prev = current
         
-    if alg == 'BFS':
+    elif alg == 'BFS':
         # reset all vertices to have infinite distance
         # and no previously visited
         for v in maze.adjList:

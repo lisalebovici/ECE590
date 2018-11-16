@@ -53,12 +53,14 @@ def bdfs(maze, alg):
                     neighbor.prev = current
         
     if alg == 'BFS':
-        # reset all vertices to have infinite distance and no previously visited
+        # reset all vertices to have infinite distance
+        # and no previously visited
         for v in maze.adjList:
             v.dist = math.inf
             v.prev = None        
         
-        # initialize the queue and push the first vertex on, start with 0 distance
+        # initialize the queue and push the first vertex on,
+        # start with 0 distance
         queue = Queue()
         queue.push(maze.start)
         maze.start.dist = 0
@@ -73,7 +75,8 @@ def bdfs(maze, alg):
                 # infinite distance indicates we haven't yet checked
                 if neighbor.dist == math.inf:
                     
-                    # add vertex to the queue, increment our distance and update the path
+                    # add vertex to the queue, increment our distance
+                    # and update the path
                     queue.push(neighbor)
                     neighbor.dist = current.dist + 1
                     neighbor.prev = current
@@ -289,7 +292,8 @@ class Queue:
             # it will be from the front (FIFO)
             val = self.queue[self.front]
             
-            # delete element, incremement new first element, and update number of elements
+            # delete element, incremement new first element,
+            # and update number of elements
             # queue can wrap so we need modulo of length
             self.queue[self.front] = None
             self.front = (self.front + 1) % len(self.queue)

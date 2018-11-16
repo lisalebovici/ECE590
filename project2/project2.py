@@ -51,19 +51,6 @@ def bdfs(maze, alg):
                 if neighbor.visited == False:
                     stack.push(neighbor)
                     neighbor.prev = current
-
-        # reconstruct path from exit to start
-        path = []
-        v = maze.exit
-        path.append(v.rank)
-
-        while v.rank != maze.start.rank:
-            v = v.prev
-            path.append(v.rank)
-
-        path.reverse()
-
-        return path
         
     if alg == 'BFS':
         # reset all vertices to have infinite distance and no previously visited
@@ -91,18 +78,18 @@ def bdfs(maze, alg):
                     neighbor.dist = current.dist + 1
                     neighbor.prev = current
 
-        # add exit to path
-        path = []
-        v = maze.exit
+    # add exit to path
+    path = []
+    v = maze.exit
+    path.append(v.rank)
+
+    # "unravel" path back toward start
+    while v.rank != maze.start.rank:
+        v = v.prev
         path.append(v.rank)
 
-        # "unravel" path back toward start
-        while v.rank != maze.start.rank:
-            v = v.prev
-            path.append(v.rank)
-
-        # reverse to get proper order
-        path.reverse()
+    # reverse to get proper order
+    path.reverse()
         
     return path
 
@@ -169,9 +156,12 @@ class Stack:
     push function to push a value onto the stack.
     """
     def push(self, val):
+        # if stack is full, we need to resize
         if self.isFull():
             self.resize()
         
+        # move the index of the top element ahead by 1, increase
+        # number of elements, and insert new value into stack
         self.top += 1
         self.numElems += 1
         self.stack[self.top] = val
@@ -182,9 +172,13 @@ class Stack:
     pop function to pop the value off the top of the stack.
     """
     def pop(self):
+        # only pop if the stack isn't empty, otherwise just return
         if not self.isEmpty():
+            # store value to pop and remove from queue
             val = self.stack[self.top]
             self.stack[self.top] = None
+
+            # decrement pointer to top element, and number of elements
             self.top -= 1
             self.numElems -= 1
 

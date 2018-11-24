@@ -3,9 +3,9 @@ Math 590
 Project 3
 Fall 2018
 
-Partner 1:
-Partner 2:
-Date:
+Partner 1: Walker Harrison (weh18)
+Partner 2: Lisa Lebovici (lrl22)
+Date: November 27, 2018
 """
 
 # Import math.
@@ -14,23 +14,84 @@ import math
 ################################################################################
 
 """
-detectArbitrage
+detectArbitrage will run the Bellman-Ford Algorithm to detect any negative cost
+cycles, which indicate arbitrage opportunities.
+
+Inputs:
+currencies - a Currencies object containing a set of exchange rates
+tol        - a tolerance level, default to 1e-15
+
+Outputs:
+negCyc     - a list containing a negative cost cycle, if one exists
 """
 def detectArbitrage(currencies, tol=1e-15):
-    ##### Your implementation goes here. #####
-    return []
-    ##### Your implementation goes here. #####
+    # set initial distances and previous visited
+    for vertex in currencies.adjList:
+        vertex.dist = math.inf
+        vertex.prev = None
+
+    # choose a vertex to start with
+    start = currencies.adjList[0]
+    start.dist = 0
+
+    negCycVertex = None
+    negCyc = []
+
+    # iterate |V| times:
+    # |V| - 1 times to find shortest path, and then one
+    # extra time to find any negative cost cycles
+    for i in range(0, len(currencies.adjList)):
+
+        # look at each vertex
+        for u in currencies.adjList:
+
+            # check each neighbor of u
+            # update predictions and previous vertex
+            for neigh in u.neigh:
+
+                # only update if new distance is shorter than previous
+                if neigh.dist > currencies.adjMat[u.rank][neigh.rank] + \
+                                   u.dist + tol:
+                    neigh.dist = currencies.adjMat[u.rank][neigh.rank] + \
+                                    u.dist
+                    neigh.prev = u
+
+                    # on extra iteration, check for negative cost cycles
+                    if i == len(currencies.adjList) - 1:
+                        negCycVertex = neigh
+
+    # if a negative cost cycle is detected, retrace
+    # vertices until cycle is found
+    if negCycVertex:
+        negCyc.append(negCycVertex.rank)
+
+        v = negCycVertex
+
+        for i in range(0, len(currencies.adjList)):
+            v = v.prev
+            negCyc.append(v.rank)
+
+            if v.isEqual(negCycVertex):
+                break
+
+        negCyc.reverse()
+
+    return negCyc
 
 ################################################################################
 
 """
-rates2mat
+rates2mat converts exchange rates into edge weights for an adjacency matrix
+by taking the negative log of each value.
+
+Inputs:
+rates - a 2D list of different exchange rates
+
+Outputs:
+a 2D list of edge weights
 """
 def rates2mat(rates):
-    ##### Your implementation goes here. #####
-    # Currently this only returns a copy of the rates matrix.
-    return [[R for R in row] for row in rates]
-    ##### Your implementation goes here. #####
+    return [[-math.log(R) for R in row] for row in rates]
 
 ################################################################################
 

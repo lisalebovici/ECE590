@@ -3,9 +3,9 @@ Math 590
 Project 4
 Fall 2018
 
-Partner 1:
-Partner 2:
-Date:
+Partner 1: Walker Harrison (weh18)
+Partner 2: Lisa Lebovici (lrl22)
+Date: December 6, 2018
 """
 
 # Import math.
@@ -24,22 +24,79 @@ def prim(adjList, adjMat):
 
 """
 Kruskal's Algorithm
-Note: the edgeList is ALREADY SORTED!
-Note: Use the isEqual method of the Vertex class when comparing vertices.
+
+kruskal: this function will implement Kruskal's Algorithm for finding a minimum
+spanning tree from a set of edges and vertices. Kruskal's Algorithm works by
+iteratively finding the minimum cost edge and, if that edge does not produce a
+cycle, adding it to the MST.
+
+INPUTS
+adjList: a list of Vertex objects
+edgeList: a list of Edge objects
+
+OUTPUTS
+X: a list of Edge objects representing the minimum spanning tree
 """
 def kruskal(adjList, edgeList):
-    ##### Your implementation goes here. #####
+    # initialize all singleton sets for each vertex
+    for vertex in adjList:
+        makeset(vertex)
+
+    # initialize the empty MST
     X = []
+
+    # loop through pre-sorted edges in increasing order
+    for e in edgeList:
+        # if the min edge crosses a cut, add it to our MST
+        u, v = e.vertices
+        if not find(u).isEqual(find(v)):
+            X.append(e)
+            union(u, v)
+
     return X
 
 ################################################################################
 
 """
-TSP
+Traveling Salesman Problem
+
+tsp: this function finds a tour that satisfies the Traveling Salesman Problem
+by using depth-first search on a minimum spanning tree.
+
+INPUTS
+adjList: a list of Vertex objects which form the nodes of a graph
+start: a Vertex object representing the initial node to visit in the TSP
+
+OUTPUTS
+tour: a list of Edge objects tracing the TSP tour cycle
 """
 def tsp(adjList, start):
-    ##### Your implementation goes here. #####
+    # initially flag all vertices as unvisited
+    for vertex in adjList:
+        vertex.visited = False
+
+    # initialize tour list and stack
     tour = []
+    stack = []
+    stack.append(start)
+
+    while stack:
+        # mark current city as visited and add to tour path
+        current = stack.pop()
+        current.visited = True
+        tour.append(current.rank)
+
+        # visit current city's neighbors according
+        # to minimum spanning tree
+        for neighbor in current.mstN:
+            if not neighbor.visited:
+                # if it's a new city, add to stack
+                stack.append(neighbor)
+
+    # complete the tour cycle and reverse the order
+    tour.append(tour[0])
+    tour.reverse()
+
     return tour
 
 ################################################################################
@@ -55,26 +112,61 @@ These functions will operate directly on the input vertex objects.
 
 """
 makeset: this function will create a singleton set with root v.
+
+INPUTS
+v: a Vertex object
 """
 def makeset(v):
-    ##### Your implementation goes here. #####
+    v.pi = v
+    v.height = 0
     return
 
 """
 find: this function will return the root of the set that contains v.
-Note: You should use path compression here.
-Note: Use the isEqual method of the Vertex class when comparing vertices.
+
+INPUTS
+v: a Vertex object
+
+OUTPUTS
+v.pi: a Vertex object, the root of the tree
 """
 def find(v):
-    ##### Your implementation goes here. #####
+    # if we are not at the root
+    if not v.isEqual(v.pi):
+        # set our parent to be the root,
+        # which is also the root of our parent
+        v.pi = find(v.pi)
+
+    # return the root, which is now our parent
     return v.pi
 
 """
 union: this function will union the sets of vertices v and u.
-Note: Use the isEqual method of the Vertex class when comparing vertices.
+
+INPUTS
+u, v: Vertex objects
 """
 def union(u,v):
-    ##### Your implementation goes here. #####
+    # first, find the root of the tree for u and the tree for v
+    ru = find(u)
+    rv = find(v)
+
+    # if the sets are already the same, return
+    if ru.isEqual(rv):
+        return
+
+    # make shorter set point to taller set
+    if ru.height > rv.height:
+        rv.pi = ru
+    elif ru.height < rv.height:
+        ru.pi = rv
+    else:
+        # same height, break tie
+        ru.pi = rv
+
+        # tree got taller, increment rv.height
+        rv.height += 1
+
     return
 
 ################################################################################

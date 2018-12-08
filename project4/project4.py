@@ -15,10 +15,54 @@ import math
 
 """
 Prim's Algorithm
+
+prim: this function will implement Prim's Algorithm for finding a minimum
+spanning tree from a set of edges and vertices. Prim's Algorithm works by
+starting at a random vertex and iteratively finding the lightest edge leading
+to an unvisited vertex. As it works, it also updates the costs to remaining 
+vertices as the minimum cost from any of the visited vertices. In that sense, 
+any remaining vertex's cost can be interpreted as its distance from the tree 
+as a whole, as opposed to the distance to the current or most recent vertex.
+
+INPUTS
+adjList: a list of Vertex objects
+edgeList: a list of Edge objects
+
+OUTPUTS
+None -- the function modifies the vertices' `prev` attribute as it works so 
+that an MST can later be built from that information
 """
 def prim(adjList, adjMat):
-    ##### Your implementation goes here. #####
-    return
+    # Doesn't matter which vertex you start with
+    # so we pick the first one
+    start = adjList[0]
+
+    # Create a priority queue out of vertices
+    Q = MinQueue(adjList)
+    
+    # iterate until all vertices are spanned 
+    while not Q.isEmpty():
+        # get next vertex based on minimum weight
+        v = Q.deleteMin()
+        
+        # mark that it is visited
+        v.visited = True
+        
+        # iterate over neighbors
+        for neighbor in v.neigh:
+            
+            # only consider vertices we haven't yet spanned
+            if not neighbor.visited:
+                
+                # check weight matrix to determine cost
+                weight = adjMat[v.rank][neighbor.rank]
+                
+                # only update if cost is an improvement
+                if neighbor.cost > weight:
+                    neighbor.cost = weight
+                    neighbor.prev = v
+                    
+    return    
 
 ################################################################################
 
